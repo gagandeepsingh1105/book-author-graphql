@@ -1,12 +1,11 @@
 import { schema } from './schema.js'
-
-const express = require('express')
-const expressGraphQL = require('express-graphql').graphqlHTTP
+import express from 'express'
+import { graphqlHTTP } from 'express-graphql'
 
 const app = express()
 
-app.use('/graphql', expressGraphQL({
+app.use('/graphql', graphqlHTTP({
     schema: schema,
     graphiql: true
 }))
-app.listen(5000, () => console.log('Server Running'))
+app.listen(5000, () => console.log('Server Running at 5000'))

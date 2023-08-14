@@ -1,11 +1,11 @@
-const {
+import {
     GraphQLSchema,
     GraphQLObjectType,
     GraphQLString,
     GraphQLInt,
     GraphQLNonNull,
     GraphQLList
-} = require('graphql')
+} from 'graphql'
 
 const authors = [
     { id: 1, name: 'Bernard Hopf' },
