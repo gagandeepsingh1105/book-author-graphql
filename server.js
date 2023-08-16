@@ -1,11 +1,9 @@
-import { schema } from './schema.js'
-import express from 'express'
-import { graphqlHTTP } from 'express-graphql'
+import { createYoga } from "graphql-yoga"
+import { createServer } from "http"
+import {schema } from "./schema.js"
 
-const app = express()
-
-app.use('/graphql', graphqlHTTP({
-    schema: schema,
-    graphiql: true
-}))
-app.listen(5000, () => console.log('Server Running at 5000'))
+const yoga = createYoga({schema})
+const server = createServer(yoga)
+server.listen(5000, () => {
+    console.info(`Server is running on http://localhost:5000/graphql`)
+})

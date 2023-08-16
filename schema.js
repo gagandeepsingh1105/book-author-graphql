@@ -31,9 +31,9 @@ const BookType = new GraphQLObjectType({
     name: 'bookdata',
     description: 'This represents a book object',
     fields: () => ({
-        id: { type: GraphQLNonNull(GraphQLInt) },
+        id: { type: new GraphQLNonNull(GraphQLInt) },
         title: { type: GraphQLString },
-        authorId: { type: GraphQLNonNull(GraphQLInt) },
+        authorId: { type: new GraphQLNonNull(GraphQLInt) },
         author: {
             type: AuthorType,
             resolve: (bookdata) => {
@@ -47,7 +47,7 @@ const AuthorType = new GraphQLObjectType({
     name: 'authordata',
     description: 'This represents an author object',
     fields: () => ({
-        id: { type: GraphQLNonNull(GraphQLInt) },
+        id: { type: new GraphQLNonNull(GraphQLInt) },
         name: { type: GraphQLString }
     })
 })
@@ -58,7 +58,7 @@ const RootQueryType = new GraphQLObjectType({
     description: 'Root Query',
     fields: () => ({
         listbooks: {
-            type: GraphQLList(BookType),
+            type: new GraphQLList(BookType),
             description: "Gets the list of all available books and it's authors",
             resolve: () => books
 
@@ -74,7 +74,7 @@ const RootQueryType = new GraphQLObjectType({
             }
         },
         listauthors: {
-            type: GraphQLList(AuthorType),
+            type: new GraphQLList(AuthorType),
             description: "Gets the list of all available authors",
             resolve: () => authors
         }
