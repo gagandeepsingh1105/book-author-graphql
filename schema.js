@@ -7,37 +7,22 @@ import {
     GraphQLList
 } from 'graphql'
 
-const authors = [
-    { id: 1, name: 'Bernard Hopf' },
-    { id: 2, name: 'Robert Plimpton' },
-    { id: 3, name: 'Jill Hergesheimer' },
-    { id: 4, name: 'John W. Spanogle' },
-    { id: 5, name: 'Lynne Danticat' }
-]
+import { sql } from './db.js'
 
-const books = [
-    { id: 1, title: 'Alanna Saves the Day', authorId: 1 },
-    { id: 2, title: 'Soft, Pliable Truth', authorId: 2 },
-    { id: 3, title: 'She Also Tottered', authorId: 2 },
-    { id: 4, title: 'Cimornul', authorId: 3 },
-    { id: 5, title: 'Quiddity and Quoddity', authorId: 3 },
-    { id: 6, title: 'Say it with Snap!', authorId: 4 },
-    { id: 7, title: 'The Elephant House', authorId: 4 },
-    { id: 8, title: 'Muddy Waters', authorId: 5 },
-    { id: 9, title: 'Did You Hear?', authorId: 5 },
-    { id: 10, title: 'The Scent of Oranges', authorId: 5 }
-]
+
 const BookType = new GraphQLObjectType({
     name: 'bookdata',
     description: 'This represents a book object',
     fields: () => ({
         id: { type: new GraphQLNonNull(GraphQLInt) },
         title: { type: GraphQLString },
-        authorId: { type: new GraphQLNonNull(GraphQLInt) },
+        authorid: { type: new GraphQLNonNull(GraphQLInt) },
         author: {
             type: AuthorType,
-            resolve: (bookdata) => {
-                return authors.find(getauthor => getauthor.id === bookdata.authorId)
+            resolve: async (bookdata) => {
+                const authid = bookdata.authorid
+                const auth = await sql`select * from authors where authorid = ${authid};`
+                return auth[0]
             }
         }
     })
@@ -47,7 +32,7 @@ const AuthorType = new GraphQLObjectType({
     name: 'authordata',
     description: 'This represents an author object',
     fields: () => ({
-        id: { type: new GraphQLNonNull(GraphQLInt) },
+        authorid: { type: new GraphQLNonNull(GraphQLInt) },
         name: { type: GraphQLString }
     })
 })
@@ -60,23 +45,32 @@ const RootQueryType = new GraphQLObjectType({
         listbooks: {
             type: new GraphQLList(BookType),
             description: "Gets the list of all available books and it's authors",
-            resolve: () => books
+            resolve: async () => {
+                const bks = await sql`select * from books;`
+                return bks
+            }
 
         },
         bookbyId: {
             type: BookType,
-            description: "Gets a single boook by Id",
+            description: "Gets a single boook by id",
             args: {
                 id: { type: GraphQLInt }
             },
-            resolve: (parent, args) => {
-                return books.find(searchbook => searchbook.id === args.id)
+            resolve: async (parent, args) => {
+                const id = args.id
+                const bk = await sql`select * from books where id = ${id};`
+                console.log(bk)
+                return bk
             }
         },
         listauthors: {
             type: new GraphQLList(AuthorType),
             description: "Gets the list of all available authors",
-            resolve: () => authors
+            resolve: async () => {
+                const auths = await sql`select * from authors;`
+                return auths
+            }
         }
     })
 })
