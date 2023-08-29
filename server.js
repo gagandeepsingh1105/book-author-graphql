@@ -2,9 +2,15 @@ import { createServer } from "http"
 import { createYoga } from "graphql-yoga"
 import { getauthor_loader, schema } from "./schema.js"
 import postgres from "postgres"
+import 'dotenv-safe/config.js'
 
-
-export const sql = postgres('postgres://postgres:Waheguru@1@34.152.25.97:5432/postgres')
+export const sql = postgres({
+    host: process.env.HOST,           
+    port: process.env.PORT,         
+    database: process.env.DATABASE,            
+    username: process.env.USER,           
+    password: process.env.PASSWORD
+})
 
 const yoga = createYoga({
     schema,

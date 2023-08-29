@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "dataloader": "^2.2.2",
+    "dotenv-safe": "^8.2.0",
     "graphql": "^16.8.0",
     "graphql-yoga": "^4.0.4",
     "postgres": "^3.3.5",
