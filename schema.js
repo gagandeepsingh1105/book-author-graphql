@@ -6,9 +6,20 @@ import {
     GraphQLNonNull,
     GraphQLList
 } from 'graphql'
+import { sql } from "./server.js"
+import DataLoader from "dataloader"
+import { map } from "ramda"
 
-import { sql } from './db.js'
 
+export function getauthor_loader() {
+    return new DataLoader(batchauthors)
+}
+
+const batchauthors = async (ids) => {
+    const author_result = await sql`select * from authors where authorid = ANY(${ids})`
+    console.log(author_result)
+    return author_result 
+}
 
 const BookType = new GraphQLObjectType({
     name: 'bookdata',
@@ -19,10 +30,8 @@ const BookType = new GraphQLObjectType({
         authorid: { type: new GraphQLNonNull(GraphQLInt) },
         author: {
             type: AuthorType,
-            resolve: async (bookdata) => {
-                const authid = bookdata.authorid
-                const auth = await sql`select * from authors where authorid = ${authid};`
-                return auth[0]
+            resolve: (bookdata, args, { authorloader }) => {
+                return authorloader.load(bookdata.authorid)
             }
         }
     })
@@ -61,7 +70,7 @@ const RootQueryType = new GraphQLObjectType({
                 const id = args.id
                 const bk = await sql`select * from books where id = ${id};`
                 console.log(bk)
-                return bk
+                return bk.rows
             }
         },
         listauthors: {

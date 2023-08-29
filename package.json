@@ -18,8 +18,10 @@
     "vitest": "^0.34.1"
   },
   "dependencies": {
+    "dataloader": "^2.2.2",
     "graphql": "^16.8.0",
     "graphql-yoga": "^4.0.4",
-    "postgres": "^3.3.5"
+    "postgres": "^3.3.5",
+    "ramda": "^0.29.0"
   }
 }
