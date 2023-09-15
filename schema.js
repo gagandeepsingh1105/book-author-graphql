@@ -8,7 +8,6 @@ import {
 } from 'graphql'
 import { sql } from "./server.js"
 import DataLoader from "dataloader"
-import { map } from "ramda"
 
 
 export function getauthor_loader() {
@@ -26,7 +25,10 @@ const BookType = new GraphQLObjectType({
     description: 'This represents a book object',
     fields: () => ({
         id: { type: new GraphQLNonNull(GraphQLInt) },
-        title: { type: GraphQLString },
+        title: {
+            type: GraphQLString,
+            extensions: { complexity: 5 }
+        },
         authorid: { type: new GraphQLNonNull(GraphQLInt) },
         author: {
             type: AuthorType,
@@ -70,7 +72,7 @@ const RootQueryType = new GraphQLObjectType({
                 const id = args.id
                 const bk = await sql`select * from books where id = ${id};`
                 console.log(bk)
-                return bk.rows
+                return bk[0]
             }
         },
         listauthors: {

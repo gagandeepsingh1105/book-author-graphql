@@ -1,4 +1,3 @@
-const auth_ids = [1, 2, 3, 4]
-const filter = '(' + auth_ids.join(',') + ')'
+const auth_ids = [{id:1, name:'abc'}]
 
-console.log(auth_ids)
+console.log(auth_ids[0])
